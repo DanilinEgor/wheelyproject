@@ -8,6 +8,9 @@
 package com.danegor.wheelyproject;
 
 public final class R {
+    public static final class anim {
+        public static final int clockwise_refresh=0x7f040000;
+    }
     public static final class attr {
     }
     public static final class drawable {
@@ -15,11 +18,11 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_update=0x7f070004;
-        public static final int item_detail_container=0x7f070000;
-        public static final int item_detail_text=0x7f070003;
-        public static final int item_detail_title=0x7f070002;
-        public static final int item_list=0x7f070001;
+        public static final int action_update=0x7f080004;
+        public static final int item_detail_container=0x7f080000;
+        public static final int item_detail_text=0x7f080003;
+        public static final int item_detail_title=0x7f080002;
+        public static final int item_list=0x7f080001;
     }
     public static final class layout {
         public static final int activity_item_detail=0x7f030000;
@@ -41,13 +44,14 @@ public final class R {
         public static final int activity_item_list=0x7f030001;
         public static final int activity_item_twopane=0x7f030002;
         public static final int fragment_item_detail=0x7f030003;
+        public static final int refresh_action_view=0x7f030004;
     }
     public static final class menu {
-        public static final int main_activity_actions=0x7f060000;
+        public static final int main_activity_actions=0x7f070000;
     }
     public static final class string {
-        public static final int action_update=0x7f040001;
-        public static final int app_name=0x7f040000;
+        public static final int action_update=0x7f050001;
+        public static final int app_name=0x7f050000;
     }
     public static final class style {
         /** 
@@ -71,10 +75,10 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f050000;
+        public static final int AppBaseTheme=0x7f060000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f050001;
+        public static final int AppTheme=0x7f060001;
     }
 }

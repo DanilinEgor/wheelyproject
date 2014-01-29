@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
@@ -15,6 +14,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import android.os.AsyncTask;
+import android.widget.SimpleAdapter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -29,19 +29,20 @@ public class Content extends AsyncTask<Void, Void, String>{
 		String id, title, text;
 	}
 	
+	ItemListActivity activity;
 	
 	public static List<Item> ITEMS = new ArrayList<Item>();
 	public static Map<String, Item> ITEM_MAP = new HashMap<String, Item>();
 	public static List<Map<String, String>> DATA = new ArrayList<Map<String, String>>();
 	
+	public Content() {}
+	
+	public Content(ItemListActivity itemListActivity) {
+		activity = itemListActivity;
+	}
+
 	public void update() {
-		try {
-			new Content().execute().get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		}
+		new Content(activity).execute();
 	}
 	
 	@Override
@@ -78,5 +79,10 @@ public class Content extends AsyncTask<Void, Void, String>{
 			itemMap.put(TEXT, item.text);
 			DATA.add(itemMap);
 		}
+		ItemListFragment ilf = (ItemListFragment) activity.getSupportFragmentManager().findFragmentById(R.id.item_list);
+		SimpleAdapter sa = null;
+		if (ilf != null) sa = (SimpleAdapter) ilf.getListAdapter();
+		if (sa != null) sa.notifyDataSetChanged();
+		activity.endAnimationOfRefreshIcon();
 	}
 }

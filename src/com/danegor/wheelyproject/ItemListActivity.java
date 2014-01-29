@@ -7,19 +7,24 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SimpleAdapter;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class ItemListActivity extends FragmentActivity implements ItemListFragment.Callbacks {
-    private final int SECONDS_TO_UPDATE = 10;
+    private final int SECONDS_TO_UPDATE = 30;
     
 	private boolean mTwoPane;
 	
-	private final Content c = new Content();
+	private MenuItem refreshItem;
+	private final Content content = new Content(this);
 	private final Handler handler = new Handler();
-	private final Runnable r = new Runnable() {
+	private final Runnable runnable = new Runnable() {
 
 		@Override
 		public void run() {
@@ -40,8 +45,7 @@ public class ItemListActivity extends FragmentActivity implements ItemListFragme
 					R.id.item_list)).setActivateOnItemClick(true);
 		}
 		
-		updateContent();
-		handler.postDelayed(r, SECONDS_TO_UPDATE * 1000);
+		handler.postDelayed(runnable, SECONDS_TO_UPDATE * 1000);
 	}
 
 	@Override
@@ -64,13 +68,15 @@ public class ItemListActivity extends FragmentActivity implements ItemListFragme
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		handler.removeCallbacks(r);
+		handler.removeCallbacks(runnable);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_activity_actions, menu);
+		refreshItem = menu.getItem(0);
+		updateContent();
 		return super.onCreateOptionsMenu(menu);
 	}
 	
@@ -78,7 +84,9 @@ public class ItemListActivity extends FragmentActivity implements ItemListFragme
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_update:
+			handler.removeCallbacks(runnable);
 			updateContent();
+			handler.postDelayed(runnable, SECONDS_TO_UPDATE * 1000);
 			return true;
 
 		default:
@@ -94,9 +102,28 @@ public class ItemListActivity extends FragmentActivity implements ItemListFragme
 	
 	public void updateContent() {
 		if (isOnline()) {
-			c.update();
-			((SimpleAdapter) ((ItemListFragment) getSupportFragmentManager()
-					.findFragmentById(R.id.item_list)).getListAdapter()).notifyDataSetChanged();
+			content.update();
+			beginAnimationOfRefreshIcon();
+		}
+		else
+			Toast.makeText(getApplicationContext(), "Not connected to Internet", Toast.LENGTH_SHORT).show();
+	}
+	
+	public void beginAnimationOfRefreshIcon() {
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	    ImageView iv = (ImageView) inflater.inflate(R.layout.refresh_action_view, null);
+
+	    Animation rotation = AnimationUtils.loadAnimation(this, R.anim.clockwise_refresh);
+	    rotation.setRepeatCount(Animation.INFINITE);
+	    iv.startAnimation(rotation);
+
+	    refreshItem.setActionView(iv);
+	}
+	
+	public void endAnimationOfRefreshIcon() {
+		if (refreshItem != null && refreshItem.getActionView() != null) {
+			refreshItem.getActionView().clearAnimation();
+			refreshItem.setActionView(null);
 		}
 	}
 	
