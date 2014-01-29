@@ -4,6 +4,5 @@
     android:name="com.danegor.wheelyproject.ItemListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
     tools:context=".ItemListActivity"
     tools:layout="@android:layout/list_content" />
